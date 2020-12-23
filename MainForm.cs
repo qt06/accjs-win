@@ -7,11 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using Newtonsoft.Json.Linq;
 using Microsoft.Web.WebView2.Core;
 namespace accjs_win
 {
     public partial class MainForm : Form
     {
+        private string injectJs;
+
         public MainForm()
         {
             Environment.SetEnvironmentVariable("WEBVIEW2_USER_DATA_FOLDER", System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Application.ProductName), EnvironmentVariableTarget.Process);
@@ -46,6 +50,7 @@ namespace accjs_win
             this.webView2Control.CoreWebView2.HistoryChanged += CoreWebView2_HistoryChanged;
             this.webView2Control.CoreWebView2.DocumentTitleChanged += CoreWebView2_DocumentTitleChanged;
             this.webView2Control.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.Image);
+            this.LoadPackage();
             UpdateTitleWithEvent("CoreWebView2InitializationCompleted succeeded");
         }
 
@@ -103,8 +108,30 @@ namespace accjs_win
             webView2Control.Size = this.ClientSize - new System.Drawing.Size(webView2Control.Location);
         }
 
-        
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+        }
+        private void LoadPackage()
+        {
+            string pkg = Path.Combine(Application.StartupPath, "package.json");
+            if (File.Exists(pkg))
+            {
+                JObject json = JObject.Parse(File.ReadAllText(pkg, Encoding.UTF8));
+                this.Text = json["name"].ToString();
+                this.webView2Control.Source = new Uri(json["targetUrl"].ToString(), UriKind.RelativeOrAbsolute);
+                if (json.ContainsKey("inject"))
+                {
+                    foreach (var item in (JArray)json["inject"])
 
-        
+                    {
+                        this.injectJs += File.ReadAllText(Path.Combine(Application.StartupPath, item.ToString()), Encoding.UTF8);
+                    }
+                    if (!string.IsNullOrEmpty(this.injectJs))
+                    {
+                        this.webView2Control.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(this.injectJs);
+                    }
+                }
+            }
+        }
     }
 }

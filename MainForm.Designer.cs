@@ -34,13 +34,14 @@
             // webView2Control
             // 
             this.webView2Control.CreationProperties = null;
-            this.webView2Control.Location = new System.Drawing.Point(10, 10);
+            this.webView2Control.Location = new System.Drawing.Point(0, 0);
             this.webView2Control.Margin = new System.Windows.Forms.Padding(0);
             this.webView2Control.Name = "webView2Control";
-            this.webView2Control.Size = new System.Drawing.Size(1900, 1060);
-            this.webView2Control.Source = new System.Uri("http://www.zd.hk/", System.UriKind.Absolute);
+            this.webView2Control.Size = new System.Drawing.Size(1280, 800);
+            this.webView2Control.Source = new System.Uri("about:blank", System.UriKind.Absolute);
             this.webView2Control.TabIndex = 0;
-            this.webView2Control.Text = "webview";
+            this.webView2Control.Tag = " ";
+            this.webView2Control.Text = " ";
             this.webView2Control.ZoomFactor = 1D;
             this.webView2Control.CoreWebView2Ready += new System.EventHandler<System.EventArgs>(this.webView2Control_CoreWebView2Ready);
             // 
@@ -48,11 +49,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1894, 1009);
+            this.ClientSize = new System.Drawing.Size(1254, 729);
+            this.ControlBox = false;
             this.Controls.Add(this.webView2Control);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "accjs-win";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
 
         }
